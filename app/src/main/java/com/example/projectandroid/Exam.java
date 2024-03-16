@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -239,6 +240,7 @@ public class Exam extends AppCompatActivity {
                 Intent i = new Intent(Exam.this, Result.class);
                 i.putExtra("Total time", String.format("%02d : %02d : %02d", hours, minutes, seconds));
                 i.putExtra("Quiz ID", quizID);
+                Log.d("test", "onFinish: Test");
                 startActivity(i);
                 finish();
             }
