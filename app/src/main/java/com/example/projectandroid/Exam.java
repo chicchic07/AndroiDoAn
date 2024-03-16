@@ -241,6 +241,8 @@ public class Exam extends AppCompatActivity {
                 i.putExtra("Total time", String.format("%02d : %02d : %02d", hours, minutes, seconds));
                 i.putExtra("Quiz ID", quizID);
                 Log.d("test", "onFinish: Test");
+                Log.d("test", "onFinish: Test");
+                Log.d("test", "onFinish: Test");
                 startActivity(i);
                 finish();
             }
