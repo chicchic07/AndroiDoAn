@@ -48,6 +48,8 @@ public class Exam extends AppCompatActivity {
         tv_timer=findViewById(R.id.tv_timer);
         tv_timer();   //đồng hồ đếm ngược tgian làm bài
 
+
+
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -115,6 +117,7 @@ public class Exam extends AppCompatActivity {
             long seconds = secondsRemaining % 60;
             long hours = minutes / 60;
             minutes = minutes % 60;
+            cdt.cancel();
             Intent i = new Intent(Exam.this, Result.class);
             i.putExtra("Total time", String.format("%02d : %02d : %02d", hours, minutes, seconds));
             i.putExtra("Quiz ID", quizID);
@@ -240,9 +243,6 @@ public class Exam extends AppCompatActivity {
                 Intent i = new Intent(Exam.this, Result.class);
                 i.putExtra("Total time", String.format("%02d : %02d : %02d", hours, minutes, seconds));
                 i.putExtra("Quiz ID", quizID);
-                Log.d("test", "onFinish: Test");
-                Log.d("test", "onFinish: Test");
-                Log.d("test", "onFinish: Test");
                 startActivity(i);
                 finish();
             }

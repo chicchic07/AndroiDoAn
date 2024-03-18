@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Home extends AppCompatActivity {
     private String userUID;
     private String firstName;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,8 @@ public class Home extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        Bundle b = getIntent().getExtras();
-        userUID = b.getString("User UID");
+        firebaseAuth = FirebaseAuth.getInstance();
+        userUID = firebaseAuth.getUid();
 
         TextView name = findViewById(R.id.name);
         TextView total_questions = findViewById(R.id.total_questions);

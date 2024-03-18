@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
 import android.app.GameManager;
 import android.app.GameState;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -14,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,12 +35,23 @@ public class Result extends AppCompatActivity {
     private String uid;
     private String quizID;
     String totalTimeElapsed;
-
-
+    BottomNavigationItemView nav;
+    ImageButton btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+        // Nút back
+        btnBack=findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Result.this, Home.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         quizID = getIntent().getStringExtra("Quiz ID");
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -97,6 +111,13 @@ public class Result extends AppCompatActivity {
         };
         database.addValueEventListener(listener);
 
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Xử lý hành động khi click nút back
+        // Quay về trang trước đó
+        finish();
+        return true;
     }
 
     public class ListAdapter extends BaseAdapter {
