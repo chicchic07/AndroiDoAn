@@ -14,6 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +34,9 @@ import com.google.firebase.database.core.Tag;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
-    private static final int RC_SIGN_IN = 9001;
+
+    //Login = Google
+    private static final int RC_SIGN_IN=9001;
     private GoogleSignInClient mGoogleSignInClient;
 
     @Override
@@ -38,22 +44,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
-
         // Configure Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        SignInButton signInButton = findViewById(R.id.sign_in_button);
+
+        BeginSignInRequest signInRequest = BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        // Your server's client ID, not your Android client ID.
+                        .setServerClientId(getString(R.string.default_web_client_id))
+                        // Only show accounts previously used to sign in.
+                        .setFilterByAuthorizedAccounts(true)
+                        .build())
+                .build();
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Bắt đầu quá trình xác thực Google
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(MainActivity.this, gso);
+                Intent signInIntent = googleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
 
         EditText email = findViewById(R.id.email);
         EditText password = findViewById(R.id.password);
@@ -103,21 +119,18 @@ public class MainActivity extends AppCompatActivity {
             finish();
         });
 
+
     }
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+    //private void signIn() {
+        //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        //startActivityForResult(signInIntent, RC_SIGN_IN);
+    //}
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -141,4 +154,5 @@ public class MainActivity extends AppCompatActivity {
             // Update your UI to show the user is signed out
         }
     }
+
 }

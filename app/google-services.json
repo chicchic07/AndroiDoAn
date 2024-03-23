@@ -8,6 +8,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:955920075633:android:8e252c06e3f6bd876d84d0",
+        "android_client_info": {
+          "package_name": "com.Android.QuizzApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgC_9mkRQa-oszDFRg7x9S1leHqbedg4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:955920075633:android:34f05604470719ad6d84d0",
         "android_client_info": {
           "package_name": "com.example.projectandroid"

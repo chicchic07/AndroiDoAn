@@ -45,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/grey_edittext"
             android:hint="Password"
             android:imeOptions="actionDone"
