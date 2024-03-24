@@ -13,7 +13,20 @@
           "package_name": "com.Android.QuizzApp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "955920075633-9n47auokbitbjn8n2oskp8dh7rijbo1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Android.QuizzApp",
+            "certificate_hash": "314bd760814f7b672d5b9dcc121c5f64e45222bd"
+          }
+        },
+        {
+          "client_id": "955920075633-nv77fiki67h7n24tf0natedocbbn4ee6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBgC_9mkRQa-oszDFRg7x9S1leHqbedg4o"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955920075633-nv77fiki67h7n24tf0natedocbbn4ee6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -32,7 +50,20 @@
           "package_name": "com.example.projectandroid"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "955920075633-lmh7f038u22irj2hmacd1k8echvq8eca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projectandroid",
+            "certificate_hash": "314bd760814f7b672d5b9dcc121c5f64e45222bd"
+          }
+        },
+        {
+          "client_id": "955920075633-nv77fiki67h7n24tf0natedocbbn4ee6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBgC_9mkRQa-oszDFRg7x9S1leHqbedg4o"
@@ -40,7 +71,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955920075633-nv77fiki67h7n24tf0natedocbbn4ee6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
