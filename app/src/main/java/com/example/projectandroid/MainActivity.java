@@ -74,13 +74,6 @@ public class MainActivity extends AppCompatActivity {
         TextView signup = findViewById(R.id.signup);
 
         auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        if (user!=null) {
-            Intent i = new Intent(MainActivity.this, Home.class);
-            startActivity(i);
-            finish();
-        }
-
         login.setOnClickListener(view -> {
             ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setMessage("Loading...");

@@ -13,6 +13,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,10 +83,28 @@ public class Home extends AppCompatActivity {
         database.addValueEventListener(listener);
 
         signout.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            Intent i = new Intent(Home.this, MainActivity.class);
-            startActivity(i);
-            finish();
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+            if (account != null) {
+                // Đăng xuất khỏi Google
+                GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .signOut()
+                        .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Intent intent = new Intent(Home.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
+
+            }else {
+                Intent i = new Intent(Home.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
+
         });
 
         createQuiz.setOnClickListener(v -> {
