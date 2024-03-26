@@ -217,9 +217,7 @@
                             android:layout_marginBottom="10dp"
                             android:hint="Quiz Title"
                             android:layout_toLeftOf="@+id/createQuiz"/>
-
                     </RelativeLayout>
-
                 </LinearLayout>
 
                 <RelativeLayout
@@ -288,7 +286,7 @@
                     android:background="@drawable/grey_background"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginTop="20dp">
 
                     <TextView
                         android:layout_width="170dp"

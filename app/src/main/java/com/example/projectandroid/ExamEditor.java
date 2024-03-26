@@ -1,6 +1,7 @@
 package com.example.projectandroid;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -39,6 +41,7 @@ public class ExamEditor extends AppCompatActivity {
     private static ArrayList<Question> data;
     private RecyclerView listview;
     private int quizID;
+    String Minutes, Seconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,6 @@ public class ExamEditor extends AppCompatActivity {
                     quizID = 100000;
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(ExamEditor.this, "Can't connect", Toast.LENGTH_SHORT).show();
@@ -83,10 +85,12 @@ public class ExamEditor extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(listview);
 
         submit.setOnClickListener(v -> {
+            long timer = (Long.parseLong(Minutes) * 60 * 1000) + (Long.parseLong(Seconds) * 1000);
             DatabaseReference ref = database.child("Quizzes");
             ref.child("Last ID").setValue(quizID);
             ref.child(String.valueOf(quizID)).child("Title").setValue(quizTitle);
             ref.child(String.valueOf(quizID)).child("Total Questions").setValue(data.size());
+            ref.child(String.valueOf(quizID)).child("Timer").setValue(String.valueOf(timer));
             DatabaseReference qRef = ref.child(String.valueOf(quizID)).child("Questions");
             for (int i=0;i<data.size();i++) {
                 String p = String.valueOf(i);
@@ -109,7 +113,7 @@ public class ExamEditor extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             finish();
         });
-
+        setTimer();
     }
 
     ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
@@ -122,11 +126,37 @@ public class ExamEditor extends AppCompatActivity {
             listview.getAdapter().notifyItemMoved(position_dragged, position_target);
             return true;
         }
-
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
     };
+    public void setTimer(){
+        TextView setTimer = (TextView) findViewById(R.id.tv_timer);
+        setTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ExamEditor.this);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog, null);
+                dialogBuilder.setView(dialogView);
+                AlertDialog alertDialog = dialogBuilder.create();
 
+                Button btnSubmit = dialogView.findViewById(R.id.btnSubmit);
+                btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText minutes=dialogView.findViewById(R.id.edtMinute);
+                        EditText seconds=dialogView.findViewById(R.id.edtSecond);
+                        Minutes=String.valueOf(minutes.getText());
+                        Seconds=String.valueOf(seconds.getText());
+                        String timer = Minutes + ":" + Seconds;
+                        setTimer.setText(timer);
+                        alertDialog.dismiss();
+                    }
+                });
+
+                alertDialog.show();
+            }
+        });
+    }
     public static class CustomAdapter extends RecyclerView.Adapter<ExamEditor.CustomAdapter.ViewHolder> {
 
         private final ArrayList<Question> arr;
@@ -311,12 +341,12 @@ public class ExamEditor extends AppCompatActivity {
                     notifyDataSetChanged();
                 });
             }
-
         }
-
         @Override
         public int getItemCount() {
             return data.size();
         }
     }
+
+
 }

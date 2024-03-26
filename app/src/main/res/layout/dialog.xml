@@ -2,10 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="20dp"
     android:orientation="vertical">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set your time"
+        android:textSize="30sp"
+        android:background="@color/light_teal"
+        android:gravity="center"
+        android:textColor="@color/white"/>
     <EditText
-        android:id="@+id/editMinute"
+        android:id="@+id/edtMinute"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:ems="10"
@@ -13,7 +21,7 @@
         android:hint="Insert minute: " />
 
     <EditText
-        android:id="@+id/editSecond"
+        android:id="@+id/edtSecond"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:ems="10"
@@ -21,11 +29,13 @@
         android:hint="Insert second: " />
 
     <Button
-        android:id="@+id/btnSubmit2"
+        android:id="@+id/btnSubmit"
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginTop="05dp"
-        android:text="Submit"/>
+        android:text="Submit"
+        android:textColor="@color/white"
+        android:background="@drawable/button_background"/>
 
 </LinearLayout>
