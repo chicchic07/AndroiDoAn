@@ -72,13 +72,13 @@ public class Exam extends AppCompatActivity {
                     for (int i=0;i<num;i++) {
                         DataSnapshot qRef = ref.child("Questions").child(String.valueOf(i));
                         Question question = new Question();
-                        question.setQuestion(qRef.child("Question").getValue().toString());
-                        question.setOption1(qRef.child("Option 1").getValue().toString());
-                        question.setOption2(qRef.child("Option 2").getValue().toString());
-                        question.setOption3(qRef.child("Option 3").getValue().toString());
-                        question.setOption4(qRef.child("Option 4").getValue().toString());
-                        int ans = Integer.parseInt(qRef.child("Ans").getValue().toString());
-                        question.setCorrectAnswer(ans);
+                        question.setQuestions(qRef.child("Questions").getValue().toString());
+                        question.setOption_1(qRef.child("Option_1").getValue().toString());
+                        question.setOption_2(qRef.child("Option_2").getValue().toString());
+                        question.setOption_3(qRef.child("Option_3").getValue().toString());
+                        question.setOption_4(qRef.child("Option_4").getValue().toString());
+                        int ans = Integer.parseInt(qRef.child("Answer").getValue().toString());
+                        question.setAnswer(ans);
                         data[i] = question;
                     }
                     DataSnapshot ref2 = snapshot.child("Users").child(uid);
@@ -115,7 +115,7 @@ public class Exam extends AppCompatActivity {
             int points = 0;
             for (int i=0;i<data.length;i++) {
                 ref.child(String.valueOf((i+1))).setValue(data[i].getSelectedAnswer());
-                if (data[i].getSelectedAnswer()==data[i].getCorrectAnswer()) {
+                if (data[i].getSelectedAnswer()==data[i].getAnswer()) {
                     totalPoints++;
                     points++;
                 }
@@ -174,11 +174,11 @@ public class Exam extends AppCompatActivity {
             RadioButton option3 = v.findViewById(R.id.option3);
             RadioButton option4 = v.findViewById(R.id.option4);
 
-            question.setText(arr[i].getQuestion());
-            option1.setText(arr[i].getOption1());
-            option2.setText(arr[i].getOption2());
-            option3.setText(arr[i].getOption3());
-            option4.setText(arr[i].getOption4());
+            question.setText(arr[i].getQuestions());
+            option1.setText(arr[i].getOption_1());
+            option2.setText(arr[i].getOption_2());
+            option3.setText(arr[i].getOption_3());
+            option4.setText(arr[i].getOption_4());
 
             option1.setOnCheckedChangeListener((compoundButton, b) -> {
                 if (b) arr[i].setSelectedAnswer(1);
@@ -236,7 +236,7 @@ public class Exam extends AppCompatActivity {
                 int points = 0;
                 for (int i=0;i<data.length;i++) {
                     ref.child(String.valueOf((i+1))).setValue(data[i].getSelectedAnswer());
-                    if (data[i].getSelectedAnswer()==data[i].getCorrectAnswer()) {
+                    if (data[i].getSelectedAnswer()==data[i].getAnswer()) {
                         totalPoints++;
                         points++;
                     }

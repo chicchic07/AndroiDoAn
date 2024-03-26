@@ -95,16 +95,16 @@ public class Result extends AppCompatActivity {
                     for (int i=0;i<num;i++) {
                         DataSnapshot qRef2 = qRef.child("Questions").child(String.valueOf(i));
                         Question question = new Question();
-                        question.setQuestion(qRef2.child("Question").getValue().toString());
-                        question.setOption1(qRef2.child("Option 1").getValue().toString());
-                        question.setOption2(qRef2.child("Option 2").getValue().toString());
-                        question.setOption3(qRef2.child("Option 3").getValue().toString());
-                        question.setOption4(qRef2.child("Option 4").getValue().toString());
+                        question.setQuestions(qRef2.child("Questions").getValue().toString());
+                        question.setOption_1(qRef2.child("Option_1").getValue().toString());
+                        question.setOption_2(qRef2.child("Option_2").getValue().toString());
+                        question.setOption_3(qRef2.child("Option_3").getValue().toString());
+                        question.setOption_4(qRef2.child("Option_4").getValue().toString());
                         question.setSelectedAnswer(Integer.parseInt(
                                 ansRef.child(String.valueOf((i+1))).getValue().toString()));
-                        int ans = Integer.parseInt(qRef2.child("Ans").getValue().toString());
+                        int ans = Integer.parseInt(qRef2.child("Answer").getValue().toString());
                         if (ans==question.getSelectedAnswer()) correctAns++;
-                        question.setCorrectAnswer(ans);
+                        question.setAnswer(ans);
                         data[i] = question;
                     }
                     total.setText("Total "+correctAns+"/"+data.length);
@@ -170,11 +170,11 @@ public class Result extends AppCompatActivity {
             RadioButton option4 = v.findViewById(R.id.option4);
             TextView result = v.findViewById(R.id.result);
 
-            question.setText(data[i].getQuestion());
-            option1.setText(data[i].getOption1());
-            option2.setText(data[i].getOption2());
-            option3.setText(data[i].getOption3());
-            option4.setText(data[i].getOption4());
+            question.setText(data[i].getQuestions());
+            option1.setText(data[i].getOption_1());
+            option2.setText(data[i].getOption_2());
+            option3.setText(data[i].getOption_3());
+            option4.setText(data[i].getOption_4());
 
             switch (data[i].getSelectedAnswer()) {
                 case 1:
@@ -198,7 +198,7 @@ public class Result extends AppCompatActivity {
 
             result.setVisibility(View.VISIBLE);
 
-            if (data[i].getSelectedAnswer()==data[i].getCorrectAnswer()) {
+            if (data[i].getSelectedAnswer()==data[i].getAnswer()) {
                 result.setBackgroundResource(R.drawable.green_background);
                 result.setTextColor(ContextCompat.getColor(Result.this, R.color.green_dark));
                 result.setText("Correct Answer");
@@ -207,7 +207,7 @@ public class Result extends AppCompatActivity {
                 result.setTextColor(ContextCompat.getColor(Result.this, R.color.red_dark));
                 result.setText("Wrong Answer");
 
-                switch (data[i].getCorrectAnswer()) {
+                switch (data[i].getAnswer()) {
                     case 1:
                         option1.setBackgroundResource(R.drawable.green_background);
                         break;

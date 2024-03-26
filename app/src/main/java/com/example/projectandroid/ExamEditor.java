@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class ExamEditor extends AppCompatActivity {
     private static ArrayList<Question> data;
@@ -99,12 +100,14 @@ public class ExamEditor extends AppCompatActivity {
             DatabaseReference qRef = ref.child(String.valueOf(quizID)).child("Questions");
             for (int i=0;i<data.size();i++) {
                 String p = String.valueOf(i);
-                qRef.child(p).child("Question").setValue(data.get(i).getQuestion());
-                qRef.child(p).child("Option 1").setValue(data.get(i).getOption1());
-                qRef.child(p).child("Option 2").setValue(data.get(i).getOption2());
-                qRef.child(p).child("Option 3").setValue(data.get(i).getOption3());
-                qRef.child(p).child("Option 4").setValue(data.get(i).getOption4());
-                qRef.child(p).child("Ans").setValue(data.get(i).getCorrectAnswer());
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("Questions", data.get(i).getQuestions());
+                hashMap.put("Option_1", data.get(i).getOption_1());
+                hashMap.put("Option_2", data.get(i).getOption_2());
+                hashMap.put("Option_3", data.get(i).getOption_3());
+                hashMap.put("Option_4", data.get(i).getOption_4());
+                hashMap.put("Answer", data.get(i).getAnswer());
+                qRef.child(p).setValue(hashMap);
             }
             database.child("Users").child(
                             FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -261,13 +264,13 @@ public class ExamEditor extends AppCompatActivity {
         public void onBindViewHolder(@NonNull CustomAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.setIsRecyclable(false);
 
-            holder.getQuestion().setText(data.get(position).getQuestion());
-            holder.getOption1et().setText(data.get(position).getOption1());
-            holder.getOption2et().setText(data.get(position).getOption2());
-            holder.getOption3et().setText(data.get(position).getOption3());
-            holder.getOption4et().setText(data.get(position).getOption4());
+            holder.getQuestion().setText(data.get(position).getQuestions());
+            holder.getOption1et().setText(data.get(position).getOption_1());
+            holder.getOption2et().setText(data.get(position).getOption_2());
+            holder.getOption3et().setText(data.get(position).getOption_3());
+            holder.getOption4et().setText(data.get(position).getOption_4());
 
-            switch (data.get(position).getCorrectAnswer()) {
+            switch (data.get(position).getAnswer()) {
                 case 1:
                     holder.getOption1rb().setChecked(true);
                     break;
@@ -289,7 +292,7 @@ public class ExamEditor extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    data.get(position).setQuestion(editable.toString());
+                    data.get(position).setQuestions(editable.toString());
                 }
             });
 
@@ -300,7 +303,7 @@ public class ExamEditor extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    data.get(position).setOption1(editable.toString());
+                    data.get(position).setOption_1(editable.toString());
                 }
             });
 
@@ -311,7 +314,7 @@ public class ExamEditor extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    data.get(position).setOption2(editable.toString());
+                    data.get(position).setOption_2(editable.toString());
                 }
             });
 
@@ -322,7 +325,7 @@ public class ExamEditor extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    data.get(position).setOption3(editable.toString());
+                    data.get(position).setOption_3(editable.toString());
                 }
             });
 
@@ -333,15 +336,15 @@ public class ExamEditor extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    data.get(position).setOption4(editable.toString());
+                    data.get(position).setOption_4(editable.toString());
                 }
             });
 
             holder.getRadio_group().setOnCheckedChangeListener((radioGroup, i) -> {
-                if (holder.getOption1rb().isChecked()) data.get(position).setCorrectAnswer(1);
-                if (holder.getOption2rb().isChecked()) data.get(position).setCorrectAnswer(2);
-                if (holder.getOption3rb().isChecked()) data.get(position).setCorrectAnswer(3);
-                if (holder.getOption4rb().isChecked()) data.get(position).setCorrectAnswer(4);
+                if (holder.getOption1rb().isChecked()) data.get(position).setAnswer(1);
+                if (holder.getOption2rb().isChecked()) data.get(position).setAnswer(2);
+                if (holder.getOption3rb().isChecked()) data.get(position).setAnswer(3);
+                if (holder.getOption4rb().isChecked()) data.get(position).setAnswer(4);
             });
 
             if (position==(data.size()-1)) {

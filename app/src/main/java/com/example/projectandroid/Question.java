@@ -2,36 +2,76 @@ package com.example.projectandroid;
 
 public class Question {
 
-    private String question;
-    private String option1;
-    private String option2;
-    private String option3;
-    private String option4;
-    private long timer;
-    private int correctAnswer;
+    private String Questions;
+    private String Option_1;
+    private String Option_2;
+    private String Option_3;
+    private String Option_4;
+    private String Timer;
+    private int Answer;
     private int selectedAnswer;
 
-    public String getQuestion() {return question;}
-    public String getOption1() {return option1;}
-    public String getOption2(){return option2;}
-    public String getOption3() {return option3;}
-    public String getOption4() {return option4;}
-    public int getCorrectAnswer() {return correctAnswer;}
-    public int getSelectedAnswer() {return selectedAnswer;}
-
-    public long getTimer() {
-        return timer;
+    public String getQuestions() {
+        return Questions;
     }
 
-    public void setQuestion(String question) {this.question = question;}
-    public void setOption1(String option1) {this.option1 = option1;}
-    public void setOption2(String option2) {this.option2 = option2;}
-    public void setOption3(String option3) {this.option3 = option3;}
-    public void setOption4(String option4) {this.option4 = option4;}
-    public void setCorrectAnswer(int correctAnswer) {this.correctAnswer = correctAnswer;}
-    public void setSelectedAnswer(int selectedAnswer) {this.selectedAnswer = selectedAnswer;}
+    public void setQuestions(String questions) {
+        Questions = questions;
+    }
 
-    public void setTimer(long timer) {
-        this.timer = timer;
+    public String getOption_1() {
+        return Option_1;
+    }
+
+    public void setOption_1(String option_1) {
+        Option_1 = option_1;
+    }
+
+    public String getOption_2() {
+        return Option_2;
+    }
+
+    public void setOption_2(String option_2) {
+        Option_2 = option_2;
+    }
+
+    public String getOption_3() {
+        return Option_3;
+    }
+
+    public void setOption_3(String option_3) {
+        Option_3 = option_3;
+    }
+
+    public String getOption_4() {
+        return Option_4;
+    }
+
+    public void setOption_4(String option_4) {
+        Option_4 = option_4;
+    }
+
+    public String getTimer() {
+        return Timer;
+    }
+
+    public void setTimer(String timer) {
+        Timer = timer;
+    }
+
+    public int getAnswer() {
+        return Answer;
+    }
+
+    public void setAnswer(int answer) {
+        Answer = answer;
+    }
+
+    public int getSelectedAnswer() {
+        return selectedAnswer;
+    }
+
+    public void setSelectedAnswer(int selectedAnswer) {
+        this.selectedAnswer = selectedAnswer;
     }
 }
