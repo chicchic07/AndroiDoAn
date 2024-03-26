@@ -4,6 +4,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("my_config") {
+            storeFile = file("C:\\Users\\Administrator\\Documents\\key_store\\keyuser.jks")
+            storePassword = "chic1502"
+            keyAlias = "key0"
+            keyPassword = "chic1502"
+        }
+    }
     namespace = "com.example.projectandroid"
     compileSdk = 34
 
@@ -21,6 +29,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("my_config")
         }
     }
     compileOptions {
