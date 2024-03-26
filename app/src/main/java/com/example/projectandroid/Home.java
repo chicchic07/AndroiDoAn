@@ -29,84 +29,45 @@ public class Home extends AppCompatActivity {
     private String userUID;
     private String firstName;
     private FirebaseAuth firebaseAuth;
+    private Button startQuiz;
+    private Button createQuiz;
+    private RelativeLayout solvedQuizzes;
+    private RelativeLayout your_quizzes;
+    private EditText quiz_title;
+    private EditText start_quiz_id;
+    private ImageView signout;
+    private DatabaseReference database;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        ProgressDialog progressDialog = new ProgressDialog(Home.this);
+        database = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        userUID = firebaseAuth.getUid();
+        initView();
+        progressDialog();
+        setContent();
+        onClickEvent();
+    }
+    private void progressDialog(){
+        progressDialog = new ProgressDialog(Home.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        userUID = firebaseAuth.getUid();
-
-        TextView name = findViewById(R.id.name);
-        TextView total_questions = findViewById(R.id.total_questions);
-        TextView total_points = findViewById(R.id.total_points);
-        Button startQuiz = findViewById(R.id.startQuiz);
-        Button createQuiz = findViewById(R.id.createQuiz);
-        RelativeLayout solvedQuizzes = findViewById(R.id.solvedQuizzes);
-        RelativeLayout your_quizzes = findViewById(R.id.your_quizzes);
-        EditText quiz_title = findViewById(R.id.quiz_title);
-        EditText start_quiz_id = findViewById(R.id.start_quiz_id);
-        ImageView signout = findViewById(R.id.signout);
-
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DataSnapshot usersRef = snapshot.child("Users").child(userUID);
-                firstName = usersRef.child("First Name").getValue().toString();
-
-                if (usersRef.hasChild("Total Points")) {
-                    String totalPoints = usersRef.child("Total Points").getValue().toString();
-                    int points = Integer.parseInt(totalPoints);
-                    total_points.setText(String.format("%03d", points));
-                }
-                if (usersRef.hasChild("Total Questions")) {
-                    String totalQuestions = usersRef.child("Total Questions").getValue().toString();
-                    int questions = Integer.parseInt(totalQuestions);
-                    total_questions.setText(String.format("%03d", questions));
-                }
-                name.setText("Welcome "+firstName+"!");
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Home.this, "Can't connect", Toast.LENGTH_SHORT).show();
-            }
-        };
-        database.addValueEventListener(listener);
-
-        signout.setOnClickListener(view -> {
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-            if (account != null) {
-                // Đăng xuất khỏi Google
-                GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .signOut()
-                        .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Intent intent = new Intent(Home.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-
-            }else {
-                Intent i = new Intent(Home.this, MainActivity.class);
-                startActivity(i);
-                finish();
-            }
-
-        });
-
+    private void initView(){
+        startQuiz = findViewById(R.id.startQuiz);
+        createQuiz = findViewById(R.id.createQuiz);
+        solvedQuizzes = findViewById(R.id.solvedQuizzes);
+        your_quizzes = findViewById(R.id.your_quizzes);
+        quiz_title = findViewById(R.id.quiz_title);
+        start_quiz_id = findViewById(R.id.start_quiz_id);
+        signout = findViewById(R.id.signout);
+    }
+    private void onClickEvent(){
         createQuiz.setOnClickListener(v -> {
             if (quiz_title.getText().toString().equals("")) {
                 quiz_title.setError("Quiz title cannot be empty");
@@ -140,6 +101,61 @@ public class Home extends AppCompatActivity {
             i.putExtra("Operation", "List Created Quizzes");
             startActivity(i);
         });
+        signout.setOnClickListener(view -> {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+            if (account != null) {
+                // Đăng xuất khỏi Google
+                GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .signOut()
+                        .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Intent intent = new Intent(Home.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
 
+            }else {
+                Intent i = new Intent(Home.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
+
+        });
+    }
+    private void setContent(){
+        TextView name = findViewById(R.id.name);
+        TextView total_questions = findViewById(R.id.total_questions);
+        TextView total_points = findViewById(R.id.total_points);
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DataSnapshot usersRef = snapshot.child("Users").child(userUID);
+                firstName = usersRef.child("First Name").getValue().toString();
+
+                if (usersRef.hasChild("Total Points")) {
+                    String totalPoints = usersRef.child("Total Points").getValue().toString();
+                    int points = Integer.parseInt(totalPoints);
+                    total_points.setText(String.format("%03d", points));
+                }
+                if (usersRef.hasChild("Total Questions")) {
+                    String totalQuestions = usersRef.child("Total Questions").getValue().toString();
+                    int questions = Integer.parseInt(totalQuestions);
+                    total_questions.setText(String.format("%03d", questions));
+                }
+                name.setText("Welcome "+firstName+"!");
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Home.this, "Can't connect", Toast.LENGTH_SHORT).show();
+            }
+        };
+        database.addValueEventListener(listener);
     }
 }

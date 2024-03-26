@@ -7,6 +7,7 @@ public class Question {
     private String option2;
     private String option3;
     private String option4;
+    private long timer;
     private int correctAnswer;
     private int selectedAnswer;
 
@@ -18,6 +19,10 @@ public class Question {
     public int getCorrectAnswer() {return correctAnswer;}
     public int getSelectedAnswer() {return selectedAnswer;}
 
+    public long getTimer() {
+        return timer;
+    }
+
     public void setQuestion(String question) {this.question = question;}
     public void setOption1(String option1) {this.option1 = option1;}
     public void setOption2(String option2) {this.option2 = option2;}
@@ -26,4 +31,7 @@ public class Question {
     public void setCorrectAnswer(int correctAnswer) {this.correctAnswer = correctAnswer;}
     public void setSelectedAnswer(int selectedAnswer) {this.selectedAnswer = selectedAnswer;}
 
+    public void setTimer(long timer) {
+        this.timer = timer;
+    }
 }

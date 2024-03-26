@@ -26,15 +26,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Exam extends AppCompatActivity {
-    private Question[] data;
     private String quizID;
     private String uid;
     private int oldTotalPoints = 0;
     private int oldTotalQuestions = 0;
-
+    private long timer;
+    private DatabaseReference database;
     private TextView tv_timer;   //đồng hồ tính giờ làm bài
     CountDownTimer cdt;
     private long totalTimeElapsed = 0;   //lưu tgian làm bài
+    public interface OnDataLoadedListener {
+        void onDataLoaded(Question[] data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +45,30 @@ public class Exam extends AppCompatActivity {
         setContentView(R.layout.activity_exam);
 
         quizID = getIntent().getStringExtra("Quiz ID");
-        ListView listview = findViewById(R.id.listview);
-        Button submit = findViewById(R.id.submit);
-        TextView title = findViewById(R.id.title);
+
         tv_timer=findViewById(R.id.tv_timer);
-        tv_timer();   //đồng hồ đếm ngược tgian làm bài
-
-
-
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference();
+        loadQuestion(new OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(Question[] data) {
+                setQuestion(data);
+                onClickEvent(data);
+                tv_timer(data); //đồng hồ đếm ngược tgian làm bài
+            }
+        });
+    }
+    private void loadQuestion(OnDataLoadedListener loadedListener){
+        TextView title = findViewById(R.id.title);
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.child("Quizzes").hasChild(quizID)) {
                     DataSnapshot ref = snapshot.child("Quizzes").child(quizID);
                     title.setText(ref.child("Title").getValue().toString());
+                    timer = Long.parseLong(ref.child("Timer").getValue().toString());
                     int num = Integer.parseInt(ref.child("Total Questions").getValue().toString());
-                    data = new Question[num];
+                    Question[] data = new Question[num];
                     for (int i=0;i<num;i++) {
                         DataSnapshot qRef = ref.child("Questions").child(String.valueOf(i));
                         Question question = new Question();
@@ -73,8 +81,6 @@ public class Exam extends AppCompatActivity {
                         question.setCorrectAnswer(ans);
                         data[i] = question;
                     }
-                    ListAdapter listAdapter = new ListAdapter(data);
-                    listview.setAdapter(listAdapter);
                     DataSnapshot ref2 = snapshot.child("Users").child(uid);
                     if (ref2.hasChild("Total Points")) {
                         oldTotalPoints = Integer.parseInt(ref2.child("Total Points").getValue().toString());
@@ -82,6 +88,7 @@ public class Exam extends AppCompatActivity {
                     if (ref2.hasChild("Total Questions")) {
                         oldTotalQuestions = Integer.parseInt(ref2.child("Total Questions").getValue().toString());
                     }
+                    loadedListener.onDataLoaded(data);
                 } else {
                     finish();
                 }
@@ -93,7 +100,14 @@ public class Exam extends AppCompatActivity {
             }
         };
         database.addValueEventListener(listener);
-
+    }
+    private void setQuestion(Question[] questions){
+        ListView listview = findViewById(R.id.listview);
+        ListAdapter adapter = new ListAdapter(questions);
+        listview.setAdapter(adapter);
+    }
+    private void onClickEvent(Question[] data){
+        Button submit = findViewById(R.id.submit);
         submit.setOnClickListener(v -> {
             DatabaseReference ref = database.child("Quizzes").child(quizID)
                     .child("Answers").child(uid);
@@ -124,7 +138,6 @@ public class Exam extends AppCompatActivity {
             startActivity(i);
             finish();
         });
-
     }
 
     public class ListAdapter extends BaseAdapter {
@@ -161,26 +174,26 @@ public class Exam extends AppCompatActivity {
             RadioButton option3 = v.findViewById(R.id.option3);
             RadioButton option4 = v.findViewById(R.id.option4);
 
-            question.setText(data[i].getQuestion());
-            option1.setText(data[i].getOption1());
-            option2.setText(data[i].getOption2());
-            option3.setText(data[i].getOption3());
-            option4.setText(data[i].getOption4());
+            question.setText(arr[i].getQuestion());
+            option1.setText(arr[i].getOption1());
+            option2.setText(arr[i].getOption2());
+            option3.setText(arr[i].getOption3());
+            option4.setText(arr[i].getOption4());
 
             option1.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) data[i].setSelectedAnswer(1);
+                if (b) arr[i].setSelectedAnswer(1);
             });
             option2.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) data[i].setSelectedAnswer(2);
+                if (b) arr[i].setSelectedAnswer(2);
             });
             option3.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) data[i].setSelectedAnswer(3);
+                if (b) arr[i].setSelectedAnswer(3);
             });
             option4.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) data[i].setSelectedAnswer(4);
+                if (b) arr[i].setSelectedAnswer(4);
             });
 
-            switch (data[i].getSelectedAnswer()) {
+            switch (arr[i].getSelectedAnswer()) {
                 case 1:
                     option1.setChecked(true);
                     break;
@@ -199,9 +212,9 @@ public class Exam extends AppCompatActivity {
         }
     }
 
-    private void tv_timer()
+    private void tv_timer(Question[] data)
     {
-        cdt = new CountDownTimer(10000, 1000) {   //chỉnh thời gian làm bài
+        cdt = new CountDownTimer(timer, 1000) {   //chỉnh thời gian làm bài
             @Override
             public void onTick(long millisUntilFinished) {
                 totalTimeElapsed += 1000; // Lưu tgian sau mỗi giây

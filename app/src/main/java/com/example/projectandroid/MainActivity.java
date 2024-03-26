@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     //Login = Google
     private static final int RC_SIGN_IN=9001;
     private GoogleSignInClient mGoogleSignInClient;
+    private EditText email;
+    private EditText password;
+    private Button login;
+    private TextView signup;
+    private SignInButton signInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,57 +63,16 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Bắt đầu quá trình xác thực Google
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
-
-        EditText email = findViewById(R.id.email);
-        EditText password = findViewById(R.id.password);
-        Button login = findViewById(R.id.login);
-        TextView signup = findViewById(R.id.signup);
-
         auth = FirebaseAuth.getInstance();
-
-        login.setOnClickListener(view -> {
-            ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-
-            Thread thread = new Thread(() -> {
-                String em = email.getText().toString();
-                String pass = password.getText().toString();
-                auth.signInWithEmailAndPassword(em, pass).addOnCompleteListener(MainActivity.this,
-                        (OnCompleteListener<AuthResult>) task -> {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user1 = auth.getCurrentUser();
-                                runOnUiThread(() -> {
-                                    progressDialog.dismiss();
-                                    Intent i = new Intent(MainActivity.this, Home.class);
-                                    i.putExtra("User UID", user1.getUid());
-                                    startActivity(i);
-                                    finish();
-                                });
-                            } else {
-                                Toast.makeText(MainActivity.this, "Operation Failed.", Toast.LENGTH_SHORT).show();
-                                runOnUiThread(progressDialog::dismiss);
-                            }
-                        });
-            });
-            thread.start();
-        });
-
-        signup.setOnClickListener(view -> {
-            Intent i = new Intent(MainActivity.this, Signup.class);
-            startActivity(i);
-            finish();
-        });
+        initView();
+        onClickEvent();
+    }
+    private void initView(){
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        login = findViewById(R.id.login);
+        signup = findViewById(R.id.signup);
+        signInButton = findViewById(R.id.sign_in_button);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -148,5 +112,49 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    private void onClickEvent(){
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Bắt đầu quá trình xác thực Google
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+        login.setOnClickListener(view -> {
+            ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            Thread thread = new Thread(() -> {
+                String em = email.getText().toString();
+                String pass = password.getText().toString();
+                auth.signInWithEmailAndPassword(em, pass).addOnCompleteListener(MainActivity.this,
+                        (OnCompleteListener<AuthResult>) task -> {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user1 = auth.getCurrentUser();
+                                runOnUiThread(() -> {
+                                    progressDialog.dismiss();
+                                    Intent i = new Intent(MainActivity.this, Home.class);
+                                    i.putExtra("User UID", user1.getUid());
+                                    startActivity(i);
+                                    finish();
+                                });
+                            } else {
+                                Toast.makeText(MainActivity.this, "Operation Failed.", Toast.LENGTH_SHORT).show();
+                                runOnUiThread(progressDialog::dismiss);
+                            }
+                        });
+            });
+            thread.start();
+        });
+
+        signup.setOnClickListener(view -> {
+            Intent i = new Intent(MainActivity.this, Signup.class);
+            startActivity(i);
+            finish();
+        });
     }
 }
