@@ -21,6 +21,13 @@ public class Signup extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private DatabaseReference database;
+    EditText first_name;
+    EditText last_name;
+    EditText email;
+    EditText password;
+    EditText confirm_password;
+    Button signup;
+    TextView login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +37,19 @@ public class Signup extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
 
-        EditText first_name = findViewById(R.id.first_name);
-        EditText last_name = findViewById(R.id.last_name);
-        EditText email = findViewById(R.id.email);
-        EditText password = findViewById(R.id.password);
-        EditText confirm_password = findViewById(R.id.confirm_password);
-        Button signup = findViewById(R.id.signup);
-        TextView login = findViewById(R.id.login);
-
+        initView();
+        onClickEvent();
+    }
+    private void initView(){
+        first_name = findViewById(R.id.first_name);
+        last_name = findViewById(R.id.last_name);
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        confirm_password = findViewById(R.id.confirm_password);
+        signup = findViewById(R.id.signup);
+        login = findViewById(R.id.login);
+    }
+    private void onClickEvent(){
         signup.setOnClickListener(view -> {
             ProgressDialog progressDialog = new ProgressDialog(Signup.this);
             progressDialog.setMessage("Loading...");
@@ -84,6 +96,5 @@ public class Signup extends AppCompatActivity {
             startActivity(i);
             finish();
         });
-
     }
 }

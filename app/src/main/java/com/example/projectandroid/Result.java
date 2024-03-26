@@ -37,39 +37,50 @@ public class Result extends AppCompatActivity {
     String totalTimeElapsed;
     BottomNavigationItemView nav;
     ImageButton btnBack;
+    TextView title;
+    ListView listview;
+    TextView total;
+    public interface OnDataLoadedListener {
+        void onDataLoaded(Question[] data);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-
-        // Nút back
-        btnBack=findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Result.this, Home.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
         quizID = getIntent().getStringExtra("Quiz ID");
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         if (getIntent().hasExtra("User UID")) uid = getIntent().getStringExtra("User UID");
 
-        TextView title = findViewById(R.id.title);
-        ListView listview = findViewById(R.id.listview);
-        TextView total = findViewById(R.id.total);
+        initView();
+        totalTime();
+        showListQuestion();
+        onClickEvent();
+
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Xử lý hành động khi click nút back
+        // Quay về trang trước đó
+        finish();
+        return true;
+    }
+    private void initView(){
+        title = findViewById(R.id.title);
+        listview = findViewById(R.id.listview);
+        total = findViewById(R.id.total);
+    }
+    private void totalTime(){
         totalTimeElapsed = getIntent().getStringExtra("Total time");
-
-        // Display total time elapsed
-        AlertDialog.Builder builder = new AlertDialog.Builder(Result.this);
-        builder.setMessage("Total time elapsed: " + totalTimeElapsed + " sceconds")
-                .setTitle("Quiz Completed")
-                .setPositiveButton("OK", null)
-                .show();
-
+        if (totalTimeElapsed != null){
+            // Display total time elapsed
+            AlertDialog.Builder builder = new AlertDialog.Builder(Result.this);
+            builder.setMessage("Total time elapsed: " + totalTimeElapsed + " sceconds")
+                    .setTitle("Quiz Completed")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+    }
+    private void showListQuestion(){
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         ValueEventListener listener = new ValueEventListener() {
             @Override
@@ -110,16 +121,20 @@ public class Result extends AppCompatActivity {
             }
         };
         database.addValueEventListener(listener);
+    }
+    private void onClickEvent(){
+        // Nút back
+        btnBack=findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Result.this, Home.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
-    @Override
-    public boolean onSupportNavigateUp() {
-        // Xử lý hành động khi click nút back
-        // Quay về trang trước đó
-        finish();
-        return true;
-    }
-
     public class ListAdapter extends BaseAdapter {
         Question[] arr;
 

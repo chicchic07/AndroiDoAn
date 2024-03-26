@@ -64,7 +64,7 @@ public class ExamEditor extends AppCompatActivity {
                     String lID = snapshot.child("Quizzes").child("Last ID").getValue().toString();
                     quizID = Integer.parseInt(lID)+1;
                 } else {
-                    quizID = 100000;
+                    quizID = 100;
                 }
             }
             @Override
@@ -85,7 +85,12 @@ public class ExamEditor extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(listview);
 
         submit.setOnClickListener(v -> {
-            long timer = (Long.parseLong(Minutes) * 60 * 1000) + (Long.parseLong(Seconds) * 1000);
+            long timer;
+            if(Minutes == null && Seconds == null){
+                 timer = (45 * 60 * 1000) + (0 * 1000);
+            }else {
+                 timer = (Long.parseLong(Minutes) * 60 * 1000) + (Long.parseLong(Seconds) * 1000);
+            }
             DatabaseReference ref = database.child("Quizzes");
             ref.child("Last ID").setValue(quizID);
             ref.child(String.valueOf(quizID)).child("Title").setValue(quizTitle);
@@ -147,9 +152,15 @@ public class ExamEditor extends AppCompatActivity {
                         EditText seconds=dialogView.findViewById(R.id.edtSecond);
                         Minutes=String.valueOf(minutes.getText());
                         Seconds=String.valueOf(seconds.getText());
-                        String timer = Minutes + ":" + Seconds;
-                        setTimer.setText(timer);
-                        alertDialog.dismiss();
+                        if(Minutes == null && Seconds == null){
+                            String timer ="45:00";
+                            setTimer.setText(timer);
+                            alertDialog.dismiss();
+                        }else {
+                            String timer = Minutes + ":" + Seconds;
+                            setTimer.setText(timer);
+                            alertDialog.dismiss();
+                        }
                     }
                 });
 
