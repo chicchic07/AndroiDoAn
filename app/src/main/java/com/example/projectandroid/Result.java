@@ -128,13 +128,17 @@ public class Result extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Result.this, Home.class);
-                startActivity(intent);
-                finish();
+                onBackPressed();
             }
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     public class ListAdapter extends BaseAdapter {
         Question[] arr;
 
